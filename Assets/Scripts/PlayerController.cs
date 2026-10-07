@@ -8,12 +8,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float jumpForce = 5f;
 
+    private Animator animator;
+
     private Rigidbody rb;
     private Vector2 moveInput;
     private bool isGrounded;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
+    }
+
+    void Update()
+    {
+        UpdateAnimator();
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -26,6 +34,7 @@ public class PlayerController : MonoBehaviour
         if (context.performed && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            animator.SetTrigger("Jump");
         }
     }
 
@@ -64,5 +73,15 @@ public class PlayerController : MonoBehaviour
     void OnCollisionExit(Collision collision)
     {
         isGrounded = false;
+    }
+
+    void UpdateAnimator()
+    {
+        if (animator == null) return;
+
+        //Convert movement input into a speed value (0 when idle, >0 when moving)
+        float currentSpeed = new Vector3(moveInput.x, 0f, moveInput.y).magnitude;
+
+        animator.SetFloat("Speed", currentSpeed);
     }
 }
