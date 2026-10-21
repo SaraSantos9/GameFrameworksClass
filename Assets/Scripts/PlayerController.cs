@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
+        gameUI = FindAnyObjectByType<GameUI>();
     }
 
     void Update()
@@ -83,5 +84,22 @@ public class PlayerController : MonoBehaviour
         float currentSpeed = new Vector3(moveInput.x, 0f, moveInput.y).magnitude;
 
         animator.SetFloat("Speed", currentSpeed);
+    }
+    private GameUI gameUI;
+
+   
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Coin"))
+        {
+            Coin coin = collision.gameObject.GetComponent<Coin>();
+
+            if (coin != null)
+            {
+                gameUI.AddScore(coin.GetScoreValue());
+                Destroy(coin.gameObject);
+            }
+        }
     }
 }

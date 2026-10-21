@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PickUp
   - Crop
+  - Coin
   layers:
   - Default
   - TransparentFX

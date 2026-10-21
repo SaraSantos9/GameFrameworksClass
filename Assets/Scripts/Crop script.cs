@@ -4,21 +4,16 @@ public class Crop : MonoBehaviour
 {
     [SerializeField] private float rotTime = 10f;
     [SerializeField] private Color rottenColor = Color.red;
+    [SerializeField] public int scoreValue = 100;
     private bool isRotten = false;
     private Renderer cropRenderer;
-    private Color originalColor;
-
     private float timer;
 
     void Start()
     {
         timer = rotTime;
-        cropRenderer = GetComponent<Renderer>();
+        cropRenderer = GetComponentInChildren<Renderer>();
 
-        if (cropRenderer != null)
-        {
-            originalColor = cropRenderer.material.color;
-        }
     }
 
     void Update()
@@ -44,8 +39,16 @@ public class Crop : MonoBehaviour
         }
 
         Debug.Log(gameObject.name + " has rotted!");
-        Destroy(gameObject);
+    }
 
+    public bool GetIsRotten()
+    {
+        return isRotten;
+    }
+
+    public int GetScoreValue()
+    {
+        return scoreValue;
     }
 
 }
