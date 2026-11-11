@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using System.Collections.Generic;
 
 public class GameUI : MonoBehaviour
 {
@@ -8,6 +9,10 @@ public class GameUI : MonoBehaviour
     private int totalCropsPlaced = 0;
     private int totalScore = 0;
 
+    private List<VisualElement> fullHearts;
+    private List<VisualElement> emptyHearts;
+
+
     void Awake()
     {
         UIDocument uiDocument = GetComponent<UIDocument>();
@@ -15,9 +20,33 @@ public class GameUI : MonoBehaviour
 
         cropsLabel = root.Q<Label>("crops-text-label");
         scoreLabel = root.Q<Label>("score-text-label");
+        fullHearts = root.Query<VisualElement>(name: "heart-image").ToList();
+        emptyHearts = root.Query<VisualElement>(name: "heart-empty").ToList();
+
+
+
+
+
 
         UpdateDisplay();
+
     }
+
+    public void UpdateHearts(int health)
+    {
+        for (int i = 0; i < fullHearts.Count; i++)
+        {
+            if (health <= i)
+            {
+                fullHearts[i].style.opacity = 0;
+                emptyHearts[i].style.visibility = Visibility.Visible;
+                Debug.Log("Showing empty heart " + i);
+            }
+        }
+    }
+
+
+
     public void UpdateCropsPlaced(int cropsPlaced)
     {
         totalCropsPlaced = cropsPlaced;
@@ -46,6 +75,11 @@ public class GameUI : MonoBehaviour
             totalScore = 0;
         }
 
+
         UpdateDisplay();
+
+
+
+
     }
 }

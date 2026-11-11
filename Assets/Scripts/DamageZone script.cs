@@ -2,29 +2,58 @@ using UnityEngine;
 
 public class DamageZone : MonoBehaviour
 {
+    [SerializeField] private float healthCooldown = 3f;
+    private float scoreTimer = 0f;
+    private float healthTimer = 0f;
     private GameUI gameUI;
-    private float timer = 0f;
 
     void Awake()
     {
         gameUI = FindAnyObjectByType<GameUI>();
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        HealthSystem health = other.GetComponent<HealthSystem>();
+
+        if (health != null)
+        {
+            health.TakeDamage();
+        }
+
+        healthTimer = 0f;
+    }
+
     void OnTriggerStay(Collider other)
     {
-        if (!other.CompareTag("Player"))
-            return;
+        if (!other.CompareTag("Player")) return;
 
-        timer += Time.fixedDeltaTime;
+        scoreTimer += Time.fixedDeltaTime;
 
-        if (timer >= 1f)
+        if (scoreTimer >= 1f)
         {
             if (gameUI != null)
             {
                 gameUI.RemoveScore(1);
             }
 
-            timer -= 1f;
+            scoreTimer = 0f;
+        }
+
+        healthTimer += Time.fixedDeltaTime;
+
+        if (healthTimer >= healthCooldown)
+        {
+            HealthSystem health = other.GetComponent<HealthSystem>();
+
+            if (health != null)
+            {
+                health.TakeDamage();
+            }
+
+            healthTimer = 0f;
         }
     }
 
@@ -32,7 +61,8 @@ public class DamageZone : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            timer = 0f;
+            scoreTimer = 0f;
+            healthTimer = 0f;
         }
     }
 }
